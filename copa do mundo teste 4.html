@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campeões da Copa do Mundo FIFA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Imagem de fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '⚽';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            transform: rotate(-15deg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Navegação por abas */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .tab.active {
+            background: #2a5298;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tabela de campeões */
+        .champions-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2a5298;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+            transform: scale(1.01);
+        }
+
+        /* Detalhes expandidos */
+        .edition-details {
+            display: none;
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-left: 4px solid #2a5298;
+            margin: 0.5rem 0;
+            animation: slideDown 0.3s ease;
+        }
+
+        .edition-details.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .detail-item h4 {
+            color: #2a5298;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Cards de estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Cards de países */
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .country-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .country-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .country-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .country-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .country-flag {
+            font-size: 3rem;
+        }
+
+        .country-titles {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .country-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .country-victories {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .country-victories.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .victory-item {
+            background: #f5f5f5;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .victory-year {
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .victory-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tabs {
+                justify-content: center;
+            }
+
+            .tab {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.8rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Botão expandir */
+        .expand-btn {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .expand-btn:hover {
+            background: #1e3c72;
+            transform: scale(1.05);
+        }
+
+        .expand-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏆 Campeões da Copa do Mundo FIFA</h1>
+        <p class="subtitle">A história dos maiores vencedores do futebol mundial</p>
+    </header>
+
+    <div class="container">
+        <!-- Estatísticas Gerais -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">22</div>
+                <div class="stat-label">Edições Realizadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Países Campeões</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">79</div>
+                <div class="stat-label">Países Participantes</div>
+            </div>
+        </div>
+
+        <!-- Navegação por Abas -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('champions')">🏆 Todos os Campeões</button>
+            <button class="tab" onclick="showTab('countries')">🌍 Títulos por País</button>
+        </div>
+
+        <!-- Conteúdo: Todos os Campeões -->
+        <div id="champions" class="tab-content active">
+            <div class="champions-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ano</th>
+                            <th>País Sede</th>
+                            <th>Campeão</th>
+                            <th>Vice</th>
+                            <th>Placar</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr onclick="toggleDetails('2022')">
+                            <td>2022</td>
+                            <td>🇶🇦 Qatar</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>🇫🇷 França</td>
+                            <td>4-2 (pênaltis)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2022">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2022" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2022 - Qatar</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>20 de novembro - 18 de dezembro</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Lusail, Lusail</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Kylian Mbappé (França) - 8 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Lionel Messi (Argentina)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 172 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Primeira Copa no Oriente Médio e no inverno</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('2018')">
+                            <td>2018</td>
+                            <td>🇷🇺 Rússia</td>
+                            <td>🇫🇷 França</td>
+                            <td>🇭🇷 Croácia</td>
+                            <td>4-2</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2018">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2018" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2018 - Rússia</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>14 de junho - 15 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Luzhniki, Moscou</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Harry Kane (Inglaterra) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Luka Modrić (Croácia)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 169 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Croácia fez sua melhor campanha na história</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('2014')">
+                            <td>2014</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>🇩🇪 Alemanha</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>1-0 (prorrogação)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2014">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2014" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2014 - Brasil</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>12 de junho - 13 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio do Maracanã, Rio de Janeiro</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>James Rodríguez (Colômbia) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Lionel Messi (Argentina)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 171 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Brasil sofreu o histórico 7-1 na semifinal</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('2010')">
+                            <td>2010</td>
+                            <td>🇿🇦 África do Sul</td>
+                            <td>🇪🇸 Espanha</td>
+                            <td>🇳🇱 Holanda</td>
+                            <td>1-0 (prorrogação)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2010">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2010" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2010 - África do Sul</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>11 de junho - 11 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Soccer City, Joanesburgo</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiros</h4>
+                                            <p>T. Müller, Villa, Sneijder, Forlán - 5 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Diego Forlán (Uruguai)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 145 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Primeira Copa na África</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('2006')">
+                            <td>2006</td>
+                            <td>🇩🇪 Alemanha</td>
+                            <td>🇮🇹 Itália</td>
+                            <td>🇫🇷 França</td>
+                            <td>5-3 (pênaltis)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2006">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2006" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2006 - Alemanha</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>9 de junho - 9 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Olímpico, Berlim</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Miroslav Klose (Alemanha) - 5 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Zinedine Zidane (França)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 147 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Zidane foi expulso na final por cabeçada</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('2002')">
+                            <td>2002</td>
+                            <td>🇰🇷🇯🇵 Coreia/Japão</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>🇩🇪 Alemanha</td>
+                            <td>2-0</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-2002">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-2002" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 2002 - Coreia do Sul/Japão</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>31 de maio - 30 de junho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Internacional, Yokohama</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Ronaldo (Brasil) - 8 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Oliver Kahn (Alemanha)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 161 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Primeira Copa na Ásia e com dois países-sede</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1998')">
+                            <td>1998</td>
+                            <td>🇫🇷 França</td>
+                            <td>🇫🇷 França</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>3-0</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1998">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1998" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1998 - França</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>10 de junho - 12 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Stade de France, Saint-Denis</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Davor Šuker (Croácia) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Ronaldo (Brasil)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>32 seleções • 64 jogos • 171 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>França conquistou seu primeiro título mundial</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1994')">
+                            <td>1994</td>
+                            <td>🇺🇸 Estados Unidos</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>🇮🇹 Itália</td>
+                            <td>3-2 (pênaltis)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1994">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1994" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1994 - Estados Unidos</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>17 de junho - 17 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Rose Bowl, Pasadena</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiros</h4>
+                                            <p>Salenko e Stoichkov - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Romário (Brasil)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>24 seleções • 52 jogos • 141 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Primeira final decidida nos pênaltis</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1990')">
+                            <td>1990</td>
+                            <td>🇮🇹 Itália</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>1-0</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1990">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1990" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1990 - Itália</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>8 de junho - 8 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Olímpico, Roma</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Salvatore Schillaci (Itália) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Salvatore Schillaci (Itália)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>24 seleções • 52 jogos • 115 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Copa com menor média de gols da história</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1986')">
+                            <td>1986</td>
+                            <td>🇲🇽 México</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>3-2</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1986">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1986" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1986 - México</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>31 de maio - 29 de junho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Azteca, Cidade do México</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Gary Lineker (Inglaterra) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Diego Maradona (Argentina)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>24 seleções • 52 jogos • 132 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Copa da "Mão de Deus" de Maradona</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1982')">
+                            <td>1982</td>
+                            <td>🇪🇸 Espanha</td>
+                            <td>🇮🇹 Itália</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>3-1</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1982">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1982" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1982 - Espanha</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>13 de junho - 11 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Santiago Bernabéu, Madrid</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Paolo Rossi (Itália) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Paolo Rossi (Itália)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>24 seleções • 52 jogos • 146 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Brasil tinha o "esquadrão de ouro" mas foi eliminado</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1978')">
+                            <td>1978</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>🇦🇷 Argentina</td>
+                            <td>🇳🇱 Holanda</td>
+                            <td>3-1 (prorrogação)</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1978">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1978" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1978 - Argentina</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>1 de junho - 25 de junho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Monumental, Buenos Aires</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Mario Kempes (Argentina) - 6 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Mario Kempes (Argentina)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>16 seleções • 38 jogos • 102 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Argentina conquistou seu primeiro título</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1974')">
+                            <td>1974</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>🇳🇱 Holanda</td>
+                            <td>2-1</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1974">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1974" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1974 - Alemanha Ocidental</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>13 de junho - 7 de julho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Olímpico, Munique</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Grzegorz Lato (Polônia) - 7 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Johan Cruyff (Holanda)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>16 seleções • 38 jogos • 97 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Era do "Futebol Total" holandês</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1970')">
+                            <td>1970</td>
+                            <td>🇲🇽 México</td>
+                            <td>🇧🇷 Brasil</td>
+                            <td>🇮🇹 Itália</td>
+                            <td>4-1</td>
+                            <td><button class="expand-btn">Ver mais <span class="expand-icon" id="icon-1970">▼</span></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="padding: 0;">
+                                <div id="details-1970" class="edition-details">
+                                    <h3>Copa do Mundo FIFA 1970 - México</h3>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <h4>📅 Período</h4>
+                                            <p>31 de maio - 21 de junho</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏟️ Final</h4>
+                                            <p>Estádio Azteca, Cidade do México</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>⚽ Artilheiro</h4>
+                                            <p>Gerd Müller (Alemanha) - 10 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🏅 Melhor Jogador</h4>
+                                            <p>Pelé (Brasil)</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>📊 Estatísticas</h4>
+                                            <p>16 seleções • 32 jogos • 95 gols</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <h4>🎯 Curiosidade</h4>
+                                            <p>Brasil tricampeão com time histórico</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr onclick="toggleDetails('1966')">
+                            <td>1966</td>
+                            <td>🏴󐁧󐁢󐁥󐁮󐁧󐁿 Inglaterra</td>
+                            <td>🏴󐁧󐁢󐁥󐁮󐁧󐁿 Inglaterra</td>
+                            <td>🇩🇪 Alemanha Ocidental</td>
+                            <td>4-2 (prorrogação)</td>
+                            <td><button class="expand-btn">Ver mais <span
